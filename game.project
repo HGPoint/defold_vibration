@@ -1,0 +1,11 @@
+[project]
+title = Vibrate
+
+[bootstrap]
+main_collection = /main/main.collectionc
+
+[library]
+include_dirs = vibrate
+
+[input]
+game_binding = /builtins/input/all.input_bindingc

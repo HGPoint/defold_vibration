@@ -1,0 +1,17 @@
+name: "Vibrate"
+
+platforms:
+  arm64-ios:
+    context:
+        frameworks: ["AudioToolbox", "Foundation", "UIKit"]
+        weakFrameworks: ["CoreHaptics"]
+
+  armv7-ios:
+    context:
+        frameworks: ["AudioToolbox", "Foundation", "UIKit"]
+        weakFrameworks: ["CoreHaptics"]
+
+  x86_64-ios:
+    context:
+        frameworks: ["AudioToolbox", "Foundation", "UIKit"]
+        weakFrameworks: ["CoreHaptics"]

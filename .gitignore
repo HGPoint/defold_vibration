@@ -1,0 +1,6 @@
+/.editor_settings
+/.internal
+/.clangd
+/build
+.DS_Store
+Thumbs.db

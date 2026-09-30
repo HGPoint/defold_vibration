@@ -1,0 +1,189 @@
+- name: vibrate
+  type: table
+  desc: Cross-platform vibration and haptic feedback for Android, iOS, and HTML5.
+        The module is also registered on unsupported platforms, where capability
+        checks return false and playback calls fail gracefully.
+  members:
+
+    - name: trigger
+      type: function
+      desc: Play a vibration or haptic effect.
+            Options are resolved in this order on the active platform,
+            platform-specific mode/payload, common pattern, preset, then
+            duration/default. Invalid option types, ranges, or combinations raise
+            a Lua error. Runtime failures are returned as `false, reason`.
+      parameters:
+        - name: options
+          type: table|nil
+          desc: Optional effect description. Passing nil, or omitting this argument,
+                requests the native default effect, with a 1000 ms timed fallback.
+          members:
+            - name: duration_ms
+              type: number
+              desc: Fallback one-shot duration in integer milliseconds, from 0 to 3600000.
+
+            - name: intensity
+              type: number
+              desc: Common intensity from 0 to 1. Defaults to 1. Unsupported platforms
+                    approximate or ignore it.
+
+            - name: sharpness
+              type: number
+              desc: Common sharpness from 0 to 1. Defaults to 0.5 and is primarily
+                    meaningful for iOS Core Haptics.
+
+            - name: fallback
+              type: boolean
+              desc: Allow a less capable effect when the requested platform feature is
+                    unavailable. Defaults to true.
+
+            - name: preset
+              type: string
+              desc: Semantic preset. One of `default`, `selection`, `impact_light`,
+                    `impact_medium`, `impact_heavy`, `impact_soft`, `impact_rigid`,
+                    `success`, `warning`, `error`, `click`, `double_click`, `tick`,
+                    or `heavy_click`.
+
+            - name: pattern
+              type: table
+              desc: Array of 1 to 256 integer durations in milliseconds. Entries
+                    alternate vibration and pause, beginning with vibration.
+
+            - name: intensities
+              type: table
+              desc: Optional 0..1 intensity for every common pattern entry. Its length
+                    must equal `pattern`; values in pause entries are ignored.
+
+            - name: sharpnesses
+              type: table
+              desc: Optional 0..1 sharpness for every common pattern entry. Its length
+                    must equal `pattern`; values in pause entries are ignored.
+
+            - name: android
+              type: table
+              desc: Android-only override.
+              members:
+                - name: mode
+                  type: string
+                  desc: One of `auto`, `one_shot`, `waveform`, `predefined`, or
+                        `composition`.
+                - name: amplitude
+                  type: number
+                  desc: One-shot amplitude. Use -1 for the device default, or an integer
+                        from 0 to 255.
+                - name: effect
+                  type: string
+                  desc: Predefined effect; `click`, `double_click`, `tick`, or
+                        `heavy_click`.
+                - name: usage
+                  type: string
+                  desc: Vibration usage; `touch`, `game`, `notification`, `alarm`, or
+                        `media`.
+                - name: timings
+                  type: table
+                  desc: Raw waveform segment durations in integer milliseconds.
+                - name: amplitudes
+                  type: table
+                  desc: Raw waveform amplitude per timing entry. Each value is -1 or
+                        an integer from 0 to 255. When both arrays are present, their
+                        lengths must match.
+                - name: repeat_index
+                  type: number
+                  desc: -1 for no repeat, or a positive 1-based Lua index into
+                        `android.timings`, or the common `pattern` when raw timings
+                        are omitted. Repeating effects continue until
+                        `vibrate.cancel()`.
+                - name: primitives
+                  type: table
+                  desc: Android composition entries. Each item is a table with `name`,
+                        optional `scale`, and optional `delay_ms`.
+
+            - name: ios
+              type: table
+              desc: iOS-only override.
+              members:
+                - name: mode
+                  type: string
+                  desc: One of `auto`, `system`, `selection`, `impact`, `notification`,
+                        or `core_haptics`.
+                - name: style
+                  type: string
+                  desc: Impact style; `light`, `medium`, `heavy`, `soft`, or `rigid`.
+                - name: notification
+                  type: string
+                  desc: Notification type; `success`, `warning`, or `error`.
+                - name: repeat
+                  type: boolean
+                  desc: Repeat a Core Haptics pattern until `vibrate.cancel()`.
+                - name: events
+                  type: table
+                  desc: Core Haptics event array. Each event accepts `type`
+                        (`transient` or `continuous`), `time_ms`, `duration_ms`,
+                        `intensity`, and `sharpness`. Continuous events require
+                        `duration_ms > 0`.
+                - name: ahap_json
+                  type: string
+                  desc: Raw AHAP JSON for Core Haptics. Mutually exclusive with
+                        `ios.events`.
+
+            - name: web
+              type: table
+              desc: HTML5-only override.
+              members:
+                - name: pattern
+                  type: table
+                  desc: Web Vibration API pattern with alternating vibration/pause durations
+                        beginning with vibration.
+                - name: duration_ms
+                  type: number
+                  desc: Web-only one-shot duration in integer milliseconds.
+      returns:
+        - name: success
+          type: boolean
+          desc: True when the active platform accepted the request.
+        - name: reason
+          type: string|nil
+          desc: Nil on success; otherwise `unsupported`, `not_allowed`, `not_visible`,
+                `rejected`, `no_hardware`, or `platform_error`.
+      examples:
+        - desc: |-
+            ```lua
+            local ok, reason = vibrate.trigger({
+                preset = "impact_medium",
+                intensity = 0.8,
+                web = { pattern = { 30, 20, 50 } },
+            })
+            if not ok then
+                print("Haptics unavailable:", reason)
+            end
+            ```
+
+    - name: cancel
+      type: function
+      desc: Cancel the currently repeating or cancellable effect. UIKit one-shot
+            feedback cannot be cancelled after it has been emitted.
+      returns:
+        - name: success
+          type: boolean
+          desc: True when cancellation was accepted.
+        - name: reason
+          type: string|nil
+          desc: Nil on success, otherwise a runtime failure reason.
+
+    - name: is_supported
+      type: function
+      desc: Check whether the current device and platform expose vibration or haptics.
+      returns:
+        - name: supported
+          type: boolean
+
+    - name: get_capabilities
+      type: function
+      desc: Return the active platform's runtime capabilities. Capability values can
+            vary by OS version, browser, and physical device.
+      returns:
+        - name: capabilities
+          type: table
+          desc: A table containing `platform`, `supported`, `pattern`, `intensity`,
+                `sharpness`, `cancel`, `predefined`, `composition`, `repeat`,
+                `core_haptics`, and `user_activation_required`.

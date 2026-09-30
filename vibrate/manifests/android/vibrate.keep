@@ -1,0 +1,3 @@
+-keep,allowoptimization class com.defold.android.vibrate.VibrateExtension {
+    *;
+}
