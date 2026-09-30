@@ -129,7 +129,7 @@ android = {
     mode = "auto",
     amplitude = -1,
     effect = "click",
-    usage = "touch",
+    usage = "game",
     timings = { ... },
     amplitudes = { ... },
     repeat_index = -1,
@@ -161,6 +161,9 @@ Predefined effects:
 ```text
 click, double_click, tick, heavy_click
 ```
+
+If `android.usage` is omitted, it defaults to `game`. An explicit value overrides
+this default for all Android modes.
 
 Usages:
 

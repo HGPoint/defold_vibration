@@ -186,7 +186,7 @@ struct VibrateOptions
     , m_AndroidAmplitude(-1)
     , m_AndroidRepeatIndex(-1)
     , m_AndroidEffect(VIBRATE_ANDROID_EFFECT_CLICK)
-    , m_AndroidUsage(VIBRATE_ANDROID_USAGE_TOUCH)
+    , m_AndroidUsage(VIBRATE_ANDROID_USAGE_GAME)
     , m_HasAndroidAmplitude(false)
     , m_HasAndroidEffect(false)
     , m_IOSMode(VIBRATE_IOS_MODE_AUTO)

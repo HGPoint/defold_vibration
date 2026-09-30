@@ -78,7 +78,7 @@
                 - name: usage
                   type: string
                   desc: Vibration usage; `touch`, `game`, `notification`, `alarm`, or
-                        `media`.
+                        `media`. Defaults to `game` when omitted.
                 - name: timings
                   type: table
                   desc: Raw waveform segment durations in integer milliseconds.
