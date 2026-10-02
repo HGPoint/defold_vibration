@@ -178,7 +178,7 @@ struct VibrateOptions
     , m_Intensity(1.0f)
     , m_Sharpness(0.5f)
     , m_Preset(VIBRATE_PRESET_DEFAULT)
-    , m_Fallback(true)
+    , m_Fallback(false)
     , m_HasDuration(false)
     , m_HasIntensity(false)
     , m_HasSharpness(false)

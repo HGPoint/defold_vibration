@@ -63,7 +63,7 @@ user settings can still suppress physical feedback.
 | `duration_ms` | integer | `1000` | One-shot duration, from 0 to 3,600,000 ms. |
 | `intensity` | number | `1.0` | Intensity from 0 to 1. Platforms without amplitude control approximate or ignore it. |
 | `sharpness` | number | `0.5` | Sharpness from 0 to 1. Primarily used by iOS Core Haptics. |
-| `fallback` | boolean | `true` | Permit a less capable effect when the requested effect is unavailable. |
+| `fallback` | boolean | `false` | Permit a less capable effect when the requested effect is unavailable. |
 | `preset` | string | `"default"` | Semantic effect preset. |
 | `pattern` | array | none | One to 256 ON/OFF durations in milliseconds, beginning with ON. |
 | `intensities` | array | none | Per-entry values from 0 to 1; length must match `pattern`. Pause-entry values are ignored. |
